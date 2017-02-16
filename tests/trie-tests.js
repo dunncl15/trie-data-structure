@@ -1,8 +1,8 @@
 import { expect, assert } from 'chai';
 import Trie from '../lib/trie.js';
 import fs from 'fs';
-const text = "/usr/share/dict/words"
-const dictionary = fs.readFileSync(text).toString('utf-8').trim().split('\n');
+const text = "/usr/share/dict/words";
+const dictionary = fs.readFileSync(text, 'utf-8').toLowerCase().trim().split('\n');
 require('locus');
 
 describe('Trie tests', ()=> {
@@ -68,29 +68,37 @@ describe('Trie tests', ()=> {
     trie.insert('pulse');
     trie.insert('pulmonary');
     trie.insert('pupil');
-    trie.insert('project')
+    trie.insert('project');
     trie.insert('program');
-    trie.insert('programmatic')
+    trie.insert('programmatic');
     trie.insert('progress');
-    trie.insert('progressive')
-    console.log(trie.root);
-    console.log(trie.root['p'].children['u']);
+    trie.insert('progressive');
+    trie.suggest('pu');
+
     expect(trie.count).to.equal(11);
+  });
+
+  it('should have a find last node function', ()=> {
+    let trie = new Trie();
+    trie.insert('pup');
+    trie.insert('pull');
+    let lastNode = trie.findLastNode('pu');
+
+    expect(Object.keys(lastNode)).to.deep.equal(['p','l']);
+  })
+
+  it('should have a root object contain keys of every letter in the alphabet', ()=> {
+    let trie = new Trie();
+    trie.populate(dictionary);
+    expect(trie.root).to.be.an('object')
+                     .to.have.all.keys(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']);
   });
 
   it('should be able to import the dictionary and create Trie', ()=> {
     let trie = new Trie();
     trie.populate(dictionary);
+    trie.suggest('piz')
 
-    expect(trie.count).to.equal(235886);
+    expect(trie.suggestions).to.deep.equal(["pize", "pizza", "pizzeria", "pizzicato", "pizzle"]);
   });
-
-
-  it.only('', () => {
-    let trie = new Trie();
-    trie.insert('pup');
-    trie.suggest('pu');
-
-  })
-
 });

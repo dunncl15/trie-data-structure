@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { expect } from 'chai';
 import Trie from '../lib/trie.js';
 import fs from 'fs';
 const text = '/usr/share/dict/words';
@@ -6,14 +6,21 @@ const dictionary = fs.readFileSync(text, 'utf-8').toLowerCase().trim().split('\n
 require('locus');
 
 describe('Trie tests', ()=> {
-  it('should be a function', ()=> {
-    assert.isFunction(Trie);
+  it('should be a constructor', ()=> {
+    let trie = new Trie();
+    expect(trie).to.be.instanceof(Trie);
   });
 
   it('trie.root should return an object', ()=> {
     let trie = new Trie();
 
     expect(trie.root).to.be.an('object');
+  });
+
+  it('trie.suggestions should return an empty array', ()=> {
+    let trie = new Trie();
+
+    expect(trie.suggestions).to.deep.equal([]);
   });
 
   it('the root should have a property of "d"', ()=> {
@@ -36,7 +43,7 @@ describe('Trie tests', ()=> {
 
   });
 
-  it('should change isComplete proptery to true for each full word', ()=> {
+  it('should change isComplete property to true for each complete word', ()=> {
     let trie = new Trie();
     trie.insert('pup');
     trie.insert('pull');
@@ -100,5 +107,17 @@ describe('Trie tests', ()=> {
     trie.suggest('piz');
 
     expect(trie.suggestions).to.deep.equal(['pize', 'pizza', 'pizzeria', 'pizzicato', 'pizzle']);
+  });
+
+  it.skip('should adjust suggestions based on selected words', ()=> {
+    let trie = new Trie();
+    trie.populate(dictionary);
+    trie.suggest('piz');
+    expect(trie.suggestions).to.deep.equal(['pize', 'pizza', 'pizzeria', 'pizzicato', 'pizzle']);
+
+    trie.select('piz', 'pizzeria');
+    trie.suggest('piz');
+
+    expect(trie.suggestions).to.deep.equal(['pizzeria', 'pize', 'pizza', 'pizzicato', 'pizzle']);
   });
 });

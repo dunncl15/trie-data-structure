@@ -1,7 +1,7 @@
 import { expect, assert } from 'chai';
 import Trie from '../lib/trie.js';
 import fs from 'fs';
-const text = "/usr/share/dict/words";
+const text = '/usr/share/dict/words';
 const dictionary = fs.readFileSync(text, 'utf-8').toLowerCase().trim().split('\n');
 require('locus');
 
@@ -36,7 +36,7 @@ describe('Trie tests', ()=> {
 
   });
 
-  it('should toggle word to complete', ()=> {
+  it('should change isComplete proptery to true for each full word', ()=> {
     let trie = new Trie();
     trie.insert('pup');
     trie.insert('pull');
@@ -85,7 +85,7 @@ describe('Trie tests', ()=> {
     let lastNode = trie.findLastNode('pu');
 
     expect(Object.keys(lastNode)).to.deep.equal(['p','l']);
-  })
+  });
 
   it('should have a root object contain keys of every letter in the alphabet', ()=> {
     let trie = new Trie();
@@ -94,11 +94,11 @@ describe('Trie tests', ()=> {
                      .to.have.all.keys(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']);
   });
 
-  it('should be able to import the dictionary and create Trie', ()=> {
+  it('should be able to suggest words with like prefixes', ()=> {
     let trie = new Trie();
     trie.populate(dictionary);
-    trie.suggest('piz')
+    trie.suggest('piz');
 
-    expect(trie.suggestions).to.deep.equal(["pize", "pizza", "pizzeria", "pizzicato", "pizzle"]);
+    expect(trie.suggestions).to.deep.equal(['pize', 'pizza', 'pizzeria', 'pizzicato', 'pizzle']);
   });
 });
